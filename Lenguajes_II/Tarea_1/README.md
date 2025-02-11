@@ -15,11 +15,11 @@ $$
 ## Pregunta 1
 
 ### Parte (a)
-Se define la gramatica libre de contexto $\large G = (\{J, L, X, V\}, \{null, true, false, \{, \}, [, ], :, s, n, ,\}, P, J)$ con $P$ formado por:
+Se define la gramatica libre de contexto $$\large G = ({J, L, X, }, {null, true, false, {, }, [, ], :, s, n, ,}, P, J)$$ con $P$ formado por:
 
 $$
 \large \begin{matrix}
-J & \rightarrow & \{L\} \\
+J & \rightarrow & {L} \\
   &      |      & [X] \\
 L & \rightarrow & s : V \\
   &      |      & L, s : V \\
@@ -35,9 +35,9 @@ X & \rightarrow & V \\
 $$
 
 > [!NOTE]
-> El valor "s" representa las cadenas de caracteres y el valor "n" representa numeros en $\mathbb{R}$.
+> El valor $"s"$ representa las cadenas de caracteres y el valor $"n"$ representa numeros en $\mathbb{R}$.
 
-Aplicando limpieza para este gramática tenemos $\large G' = (\{S, J, L, R, V, X, Y\}, \{null, true, false, \{, \}, [, ], :, s, n, ,\}, P', S)$ con $P'$ formado por:
+Aplicando limpieza para este gramática tenemos $$\large G' = (\{S, J, L, R, V, X, Y\}, \{null, true, false, \{, \}, [, ], :, s, n, ,\}, P', S)$$ con $P'$ formado por:
 
 $$
 \large \begin{matrix}
