@@ -97,7 +97,8 @@ Se usa la herramienta Parsec en Python. Acá su repositorio de [GitHub](https://
 	```
 	pip install parsec
 	```
-
+	* La version de Parsec instalada es `3.17`.
+	* A fecha 2/11/2025 Parsec tiene soporte hasta `Python 3.12`. Ver mas informacion de [Parsec](https://pypi.org/project/parsec/#history).
 7. Ejecutar el archivo `pregunta_1b.py` con el comando.
 	```
 	python3 pregunta_1b.py <dir. archivo de prueba>
