@@ -1,6 +1,7 @@
 # Resolución de Tarea 1 - LL y LR (Fecha: 13-02-2025)
 
-$\begin{matrix}
+$$
+\begin{matrix}
 \text{Universidad Simón Bolívar} \\
 \text{Departamento de Computación y Tecnología de la Información} \\
 \text{CI4721 - Lenguajes de Programación II} \\
@@ -8,7 +9,8 @@ $\begin{matrix}
 \text{Estudiante: Junior Miguel Lara Torres (17-10303)} \\
 \text{ } \\
 \Large \text{Tarea 1 (10 puntos)} \\
-\end{matrix}$
+\end{matrix}
+$$
 
 ## Pregunta 1
 
