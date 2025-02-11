@@ -17,7 +17,7 @@ $$
 ### Parte (a)
 Se define la gramatica libre de contexto $\large G = (\{J, L, X, V\}, \{null, true, false, \{, \}, [, ], :, s, n, ,\}, P, J)$ con $P$ formado por:
 
-$
+$$
 \large \begin{matrix}
 J & \rightarrow & \{L\} \\
   &      |      & [X] \\
@@ -32,14 +32,14 @@ V & \rightarrow & s \\
 X & \rightarrow & V \\
   &      |      & V, X\\
 \end{matrix}
-$
+$$
 
 > [!NOTE]
 > El valor "s" representa las cadenas de caracteres y el valor "n" representa numeros en $\mathbb{R}$.
 
 Aplicando limpieza para este gramática tenemos $\large G' = (\{S, J, L, R, V, X, Y\}, \{null, true, false, \{, \}, [, ], :, s, n, ,\}, P', S)$ con $P'$ formado por:
 
-$
+$$
 \large \begin{matrix}
 S & \rightarrow & J \\
 J & \rightarrow & \{L\} \\
@@ -57,12 +57,12 @@ X & \rightarrow & V Y \\
 Y & \rightarrow & , V Y \\
   &      |      & \lambda \\
 \end{matrix}
-$
+$$
 
 ### Parte (b)
-Se usa la herramienta [Parsec](https://github.com/sighingnow/parsec.py) de Python.
+Se usa la herramienta Parsec en Python. Acá su repositorio de [GitHub](https://github.com/sighingnow/parsec.py) y su liberia oficial en [PyPi Org](https://pypi.org/project/parsec/).
 
-Guia de instalaciÓn y ejecuciÓn
+#### Guia de instalación y ejecución
 
 1. Actualiza el sistema, instala Python 3 y sus herramientas de desarrollo.
 	```
