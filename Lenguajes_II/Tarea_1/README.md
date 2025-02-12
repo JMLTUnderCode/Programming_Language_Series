@@ -18,7 +18,7 @@ $$
 Se define la gramatica libre de contexto $G = (\text{\\{}J, L, X, V\text{\\}}, \text{\\{}null, true, false, \text{\\{}, \text{\\}}, [, ], :, s, n, ,\text{\\}}, P, J)$ con $P$ formado por:
 
 $$
-\large \begin{matrix}
+\large \begin{array}{ccl}
 J & \rightarrow & \text{\\{L\\}} \\
   &      |      & [X] \\
 L & \rightarrow & s : V \\
@@ -31,7 +31,7 @@ V & \rightarrow & s \\
   &      |      & J \\
 X & \rightarrow & V \\
   &      |      & V, X\\
-\end{matrix}
+\end{array}
 $$
 
 > [!NOTE]
@@ -40,7 +40,7 @@ $$
 Aplicando limpieza para este gramática tenemos $\large G' = (\text{\\{}S, J, L, R, V, X, Y\text{\\}}, \text{\\{} s, n, true, false, null, \text{\\{}, \text{\\}}, [, ], :, ,\text{\\}}, P', S)$ con $P'$ formado por:
 
 $$
-\large \begin{matrix}
+\large \begin{array}{ccl}
 S & \rightarrow & J \\
 J & \rightarrow & \text{\\{L\\}} \\
   &      |      & [X] \\
@@ -56,7 +56,7 @@ V & \rightarrow & s \\
 X & \rightarrow & V Y \\
 Y & \rightarrow & , V Y \\
   &      |      & \lambda \\
-\end{matrix}
+\end{array}
 $$
 
 ### Parte (b)
@@ -111,6 +111,33 @@ Se usa la herramienta Parsec en Python. Acá su repositorio de [GitHub](https://
 ## Pregunta 2
 
 ### Parte (a)
+
+Dada la gramatica $\large IFT = (\text{\\{}E\text{\\}}, \text{\\{} n, +, if, then, else \text{\\}}, P, E)$ con $P$ formado por:
+
+$$
+\begin{array}{ccl}
+E & \rightarrow & if \text{ E } then \text{ E } else \text{ E } \\
+  &  |  & if \text{ E } then \text{ E } \\
+  &  |  & \text{E+E} \\
+  &  |  & n
+\end{array}
+$$
+
+La expansión de esta gramatica con un nuevo símbolo inicial no recursivo $S$ queda que $\large IFT' = (\text{\\{}S, E\text{\\}}, \text{\\{} n, +, if, then, else, \$ \text{\\}}, P', S)$ con $P'$ formado por:
+
+$$
+\begin{array}{ccl}
+S & \rightarrow & E\$ \\
+E & \rightarrow & if \text{ E } then \text{ E } else \text{ E } \\
+  &  |  & if \text{ E } then \text{ E } \\
+  &  |  & \text{E+E} \\
+  &  |  & n
+\end{array}
+$$
+
+Para el Máquina Característica LR(1) se tiene link directo a [LucidChar](#) o a continuacion la imagen representativa.
+
+
 
 ### Parte (b)
 
