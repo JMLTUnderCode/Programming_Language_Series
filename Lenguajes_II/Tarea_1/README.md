@@ -35,7 +35,7 @@ X & \rightarrow & V \\
 $$
 
 > [!NOTE]
-> El valor $"s"$ representa las cadenas de caracteres y el valor $"n"$ representa numeros en $\mathbb{R}$.
+> El símbolo $"s"$ representa las cadenas de caracteres y el simbolo $"n"$ representa numeros en $\mathbb{R}$.
 
 Aplicando limpieza para este gramática tenemos $\large G' = (\text{\\{}S, J, L, R, V, X, Y\text{\\}}, \text{\\{} s, n, true, false, null, \text{\\{}, \text{\\}}, [, ], :, ,\text{\\}}, P', S)$ con $P'$ formado por:
 
@@ -112,7 +112,7 @@ Se usa la herramienta Parsec en Python. Acá su repositorio de [GitHub](https://
 
 ### Parte (a)
 
-Dada la gramatica $\large IFT = (\text{\\{}E\text{\\}}, \text{\\{} n, +, if, then, else \text{\\}}, P, E)$ con $P$ formado por:
+Dada la gramatica $\large IFT = (\text{\\{} E \text{\\}}, \text{\\{} n, +, if, then, else \text{\\}}, P, E)$ con $P$ formado por:
 
 $$
 \begin{array}{ccl}
@@ -123,7 +123,7 @@ E & \rightarrow & if \text{ E } then \text{ E } else \text{ E } \\
 \end{array}
 $$
 
-La expansión de esta gramatica con un nuevo símbolo inicial no recursivo $S$ queda que $\large IFT' = (\text{\\{}S, E\text{\\}}, \text{\\{} n, +, if, then, else, \$ \text{\\}}, P', S)$ con $P'$ formado por:
+La expansión de esta gramatica con un nuevo símbolo inicial no recursivo $S$ queda que $\large IFT' = (\text{\\{}S, E\text{\\}}, \text{\\{} n, +, if, then, else, \text{\\$} \text{\\}}, P', S)$ con $P'$ formado por:
 
 $$
 \begin{array}{ccl}
@@ -137,6 +137,7 @@ $$
 
 Para el Máquina Característica LR(1) se tiene link directo a [LucidChar](#) o a continuacion la imagen representativa.
 
+![Diagrama en blanco - Página 1 (1)](https://github.com/user-attachments/assets/45314af4-9346-4c21-9be4-84e8abf337ff)
 
 
 ### Parte (b)
