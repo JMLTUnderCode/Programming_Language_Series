@@ -301,48 +301,48 @@ $$
 
 A continuacion de muestra la tabla de acciones basado en la máquina característica LALR(1).
 
-| Renames | States      | if                | then              | else              | +                 | n                 | $                 | E           |
-|:-------:|:-----------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------:|
-| 0       | 0           | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 1           |
-| 1       | 1           |                   |                   |                   | SHIFT 5,11,19,28  |                   | 4                 |             |
-| 2       | 4           |                   |                   |                   |                   |                   | REDUCE P1-ACCEPT  |             |
-| 3       | 2,7,14,22   | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 6,12,20,29  |
-| 4       | 6,12,20,29  |                   | SHIFT 10,17,26,33 |                   | SHIFT 5,11,19,28  |                   |                   |             |
-| 5       | 10,17,26,33 | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 13,21,30,35 |
-| 6       | 13,21,30,35 |                   | REDUCE-P3         | SHIFT 18,27,34,37 | REDUCE-P3         |                   | REDUCE-P3         |             |
-| 7       | 3,8,15,23   |                   | REDUCE-P5         | REDUCE-P5         | REDUCE-P5         |                   | REDUCE-P5         |             |
-| 8       | 5,11,19,28  | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 9,16,25,32  |
-| 9       | 18,27,34,37 | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 24,21,35,38 |
-| 10      | 9,16,25,32  |                   | REDUCE-P4         | REDUCE-P4         | REDUCE-P4         |                   | REDUCE-P4         |             |
-| 11      | 24,21,35,38 |                   | REDUCE-P2         | REDUCE-P2         | REDUCE-P2         |                   | REDUCE-P2         |             |
+| RenameState | States      | if                | then              | else              | +                 | n                 | $                 | E           |
+|:-----------:|:-----------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------:|
+| 0           | 0           | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 1           |
+| 1           | 1           |                   |                   |                   | SHIFT 5,11,19,28  |                   | 4                 |             |
+| 2           | 4           |                   |                   |                   |                   |                   | REDUCE P1-ACCEPT  |             |
+| 3           | 2,7,14,22   | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 6,12,20,29  |
+| 4           | 6,12,20,29  |                   | SHIFT 10,17,26,33 |                   | SHIFT 5,11,19,28  |                   |                   |             |
+| 5           | 10,17,26,33 | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 13,21,30,35 |
+| 6           | 13,21,30,35 |                   | REDUCE-P3         | SHIFT 18,27,34,37 | REDUCE-P3         |                   | REDUCE-P3         |             |
+| 7           | 3,8,15,23   |                   | REDUCE-P5         | REDUCE-P5         | REDUCE-P5         |                   | REDUCE-P5         |             |
+| 8           | 5,11,19,28  | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 9,16,25,32  |
+| 9           | 18,27,34,37 | SHIFT 2,7,14,22   |                   |                   |                   | SHIFT 3,8,15,23   |                   | 24,21,35,38 |
+| 10          | 9,16,25,32  |                   | REDUCE-P4         | REDUCE-P4         | REDUCE-P4         |                   | REDUCE-P4         |             |
+| 11          | 24,21,35,38 |                   | REDUCE-P2         | REDUCE-P2         | REDUCE-P2         |                   | REDUCE-P2         |             |
 
 Para el procesamiento de la expresion $\large \text{"if n + n then if n then n else n + n"}$ tomemos en consideracion la columna RenameState para facilitar la pila.
 
-| Expression                            | Stack                                  | Action    |
-|--------------------------------------:|---------------------------------------:|:---------:|
-| if n + n then if n then n else n + n$ | $E_0\\$$					             | SHIFT-3   |
-|    n + n then if n then n else n + n$ | $E_3E_0\\$$					         | SHIFT-7   |
-|      + n then if n then n else n + n$ | $E_7E_3E_0\\$$					     | REDUCE-P5 |
-|      + n then if n then n else n + n$ | $E_4E_3E_0\\$$                         | SHIFT-8   |
-|        n then if n then n else n + n$ | $E_8E_4E_3E_0\\$$                      | SHIFT-7   |
-|          then if n then n else n + n$ | $E_7E_8E_4E_3E_0\\$$                   | REDUCE-P5 |
-|          then if n then n else n + n$ | $E_{10}E_8E_4E_3E_0\\$$                | REDUCE-P4 |
-|          then if n then n else n + n$ | $E_4E_3E_0\\$$                         | SHIFT-5   |
-|               if n then n else n + n$ | $E_5E_4E_3E_0\\$$                      | SHIFT-3   |
-|                  n then n else n + n$ | $E_3E_5E_4E_3E_0\\$$                   | SHIFT-7   |
-|                    then n else n + n$ | $E_7E_3E_5E_4E_3E_0\\$$                | REDUCE-P5 |
-|                    then n else n + n$ | $E_4E_3E_5E_4E_3E_0\\$$                | SHIFT-5   | 
-|                         n else n + n$ | $E_5E_4E_3E_5E_4E_3E_0\\$$             | SHIFT-7   |
-|                           else n + n$ | $E_7E_5E_4E_3E_5E_4E_3E_0\\$$          | REDUCE-P5 |
-|                           else n + n$ | $E_6E_5E_4E_3E_5E_4E_3E_0\\$$          | SHIFT-9   |
-|                                n + n$ | $E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$$       | SHIFT-7   |
-|                                  + n$ | $E_7E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$$    | REDUCE-P5 |
-|                                  + n$ | $E_{11}E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$$ | REDUCE-P2 |
-|                                  + n$ | $E_6E_5E_4E_3E_0\\$$                   | REDUCE-P3 |
-|                                  + n$ | $E_1E_0\\$$                            | SHIFT-8   |
-|                                    n$ | $E_8E_1E_0\\$$                         | SHIFT-7   |
-|                                     $ | $E_7E_8E_1E_0\\$$                      | REDUCE-P5 |
-|                                     $ | $E_{10}E_8E_1E_0\\$$                   | REDUCE-P4 |
-|                                     $ | $E_1E_0\\$$                            | SHIFT-2   |
-|                                       | $E_2E_1E_0\\$$                         | REDUCE-P1 |
-|                                       |                                        | ACCEPT    |
+| Expression                            | Stack                                 | Action    |
+|--------------------------------------:|--------------------------------------:|:---------:|
+| if n + n then if n then n else n + n$ | $E_0\$$                               | SHIFT-3   |
+|    n + n then if n then n else n + n$ | $E_3E_0\$$                            | SHIFT-7   |
+|      + n then if n then n else n + n$ | $E_7E_3E_0\$$                         | REDUCE-P5 |
+|      + n then if n then n else n + n$ | $E_4E_3E_0\$$                         | SHIFT-8   |
+|        n then if n then n else n + n$ | $E_8E_4E_3E_0\$$                      | SHIFT-7   |
+|          then if n then n else n + n$ | $E_7E_8E_4E_3E_0\$$                   | REDUCE-P5 |
+|          then if n then n else n + n$ | $E_{10}E_8E_4E_3E_0\$$                | REDUCE-P4 |
+|          then if n then n else n + n$ | $E_4E_3E_0\$$                         | SHIFT-5   |
+|               if n then n else n + n$ | $E_5E_4E_3E_0\$$                      | SHIFT-3   |
+|                  n then n else n + n$ | $E_3E_5E_4E_3E_0\$$                   | SHIFT-7   |
+|                    then n else n + n$ | $E_7E_3E_5E_4E_3E_0\$$                | REDUCE-P5 |
+|                    then n else n + n$ | $E_4E_3E_5E_4E_3E_0\$$                | SHIFT-5   | 
+|                         n else n + n$ | $E_5E_4E_3E_5E_4E_3E_0\$$             | SHIFT-7   |
+|                           else n + n$ | $E_7E_5E_4E_3E_5E_4E_3E_0\$$          | REDUCE-P5 |
+|                           else n + n$ | $E_6E_5E_4E_3E_5E_4E_3E_0\$$          | SHIFT-9   |
+|                                n + n$ | $E_9E_6E_5E_4E_3E_5E_4E_3E_0\$$       | SHIFT-7   |
+|                                  + n$ | $E_7E_9E_6E_5E_4E_3E_5E_4E_3E_0\$$    | REDUCE-P5 |
+|                                  + n$ | $E_{11}E_9E_6E_5E_4E_3E_5E_4E_3E_0\$$ | REDUCE-P2 |
+|                                  + n$ | $E_6E_5E_4E_3E_0\$$                   | REDUCE-P3 |
+|                                  + n$ | $E_1E_0\$$                            | SHIFT-8   |
+|                                    n$ | $E_8E_1E_0\$$                         | SHIFT-7   |
+|                                     $ | $E_7E_8E_1E_0\$$                      | REDUCE-P5 |
+|                                     $ | $E_{10}E_8E_1E_0\$$                   | REDUCE-P4 |
+|                                     $ | $E_1E_0\$$                            | SHIFT-2   |
+|                                       | $E_2E_1E_0\$$                         | REDUCE-P1 |
+|                                       |                                       | ACCEPT    |
