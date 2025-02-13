@@ -256,34 +256,68 @@ Por otro lado, se mostraran los estados con conflictos y las acciones a tomar co
  	Se aplica REDUCE con `E → E+E.` para satisfacer `Regla 1`.
 ### Parte (d)
 
-A continuacion de muestra la tabla de acciones basado en la máquina característica LALR(1).
+Teniendo en cuenta la siguiente enumeracion para las producciones
+
 $$
-\begin{array}{c|cccccc|c}
-\text{States} & \text{if} & \text{then} & \text{else} & \text{+} & \text{n} & \text{\\$} & \text{E} \\
-0  & & & & & & &  \\
-1  & & & & & & &  \\
-2  & & & & & & &  \\
-3  & & & & & & &  \\
-4  & & & & & & &  \\
-5  & & & & & & &  \\
-6  & & & & & & &  \\
-7  & & & & & & &  \\
+\begin{array}{cccl}
+(P1) & S & \rightarrow & E\$ \\
+(P2) & E & \rightarrow & if \text{ E } then \text{ E } else \text{ E } \\
+(P3) &  &  |  & if \text{ E } then \text{ E } \\
+(P4) &  &  |  & \text{E+E} \\
+(P5) &  &  |  & n
 \end{array}
 $$
 
-Para el procesamiento de la expresion $\large \text{if n + n then if n then n else n + n}$ tenemos que
+A continuacion de muestra la tabla de acciones basado en la máquina característica LALR(1).
+
+$$
+\begin{array}{|c|c|cccccc|c|}
+\text{RenameState} & \text{States}& \text{if}	    & \text{then} 	& \text{else} 	    & \text{+}	       & \text{n}	 & \text{\\$}		& \text{E}	\\
+0 		   & 0  	  & SHIFT-2,7,14,22 &  			&  		    &  		       & SHIFT-3,8,15,23 &			&  1		\\
+1 		   & 1  	  &  		    &  			&  		    & SHIFT-5,11,19,28 &  		 & 4			&  		\\
+2 		   & 4  	  &  		    &		  	&  		    &  		       &  		 & REDUCE-P1-ACCEPT	&  		\\
+3 		   & 2,7,14,22 	  & SHIFT-2,7,14,22 & 			&  		    &  		       & SHIFT-3,8,15,23 & 			& 6,12,20,29	\\
+4 		   & 6,12,20,29   &  		    & SHIFT-10,17,26,33 & 		    & SHIFT-5,11,19,28 & 		 &			&		\\
+5 		   & 10,17,26,33  & SHIFT-2,7,14,22 &  			&		    &  		       & SHIFT-3,8,15,23 &			& 13,21,30,35	\\
+6	 	   & 13,21,30,35  & 		    & REDUCE-P3		& SHIFT-18,27,34,37 & REDUCE-P3	       &  		 & REDUCE-P3	  	&		\\
+7 		   & 3,8,15,23 	  & 		    & REDUCE-P5		& REDUCE-P5	    & REDUCE-P5        &  		 & REDUCE-P5	 	&  		\\
+8 		   & 5,11,19,28   & SHIFT-2,7,14,22 &  			&  		    &  		       & SHIFT-3,8,15,23 &  			& 9,16,25,32	\\
+9 		   & 18,27,34,37  & SHIFT-2,7,14,22 &  			&  		    & 		       & SHIFT-3,8,15,23 &  			& 24,21,35,38	\\
+10		   & 9,16,25,32   & 		    & REDUCE-P4		& REDUCE-P4	    & REDUCE-P4	       &  		 & REDUCE-P4		&  		\\
+11 		   & 24,21,35,38  &  		    & REDUCE-P2		& REDUCE-P2	    & REDUCE-P2        &  		 & REDUCE-P2		&  		\\
+\end{array}
+$$
+
+Para el procesamiento de la expresion $\large \text{"if n + n then if n then n else n + n"}$ tomemos en consideracion la columna RenameState para facilitar la pila.
+
 $$
 \begin{array}{c|c|c}
-\text{Stack} & \text{Expression} & \text{Action} \\
- & &  \\
- & &  \\
- & &  \\
- & &  \\
- & &  \\
- & &  \\
- & &  \\
- & &  \\
- & &  \\
- & &  \\
+\text{Expression} 			       & \text{Stack}				& \text{Action} \\
+\text{if n + n then if n then n else n + n\\$} & E_0\\$					& SHIFT-3	\\
+\text{n + n then if n then n else n + n\\$}    & E_3E_0\\$				& SHIFT-7	\\
+\text{+ n then if n then n else n + n\\$}      & E_7E_3E_0\\$				& REDUCE-P5	\\
+\text{+ n then if n then n else n + n\\$}      & E_4E_3E_0\\$				& SHIFT-8	\\
+\text{n then if n then n else n + n\\$}        & E_8E_4E_3E_0\\$			& SHIFT-7	\\
+\text{then if n then n else n + n\\$}          & E_7E_8E_4E_3E_0\\$			& REDUCE-P5	\\
+\text{then if n then n else n + n\\$}          & E_10E_8E_4E_3E_0\\$			& REDUCE-P4	\\
+\text{then if n then n else n + n\\$}          & E_4E_3E_0\\$				& SHIFT-5	\\
+\text{if n then n else n + n\\$}               & E_5E_4E_3E_0\\$			& SHIFT-3	\\
+\text{n then n else n + n\\$}                  & E_3E_5E_4E_3E_0\\$			& SHIFT-7	\\
+\text{then n else n + n\\$}                    & E_7E_3E_5E_4E_3E_0\\$			& REDUCE-P5	\\
+\text{then n else n + n\\$}                    & E_4E_3E_5E_4E_3E_0\\$			& SHIFT-5	\\
+\text{n else n + n\\$}                         & E_5E_4E_3E_5E_4E_3E_0\\$		& SHIFT-7	\\
+\text{else n + n\\$}                           & E_7E_5E_4E_3E_5E_4E_3E_0\\$		& REDUCE-P5	\\
+\text{else n + n\\$}                           & E_6E_5E_4E_3E_5E_4E_3E_0\\$ 		& SHIFT-9	\\
+\text{n + n\\$}                                & E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$ 	& SHIFT-7	\\
+\text{+ n\\$}                                  & E_7E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$	& REDUCE-P5	\\
+\text{+ n\\$}                                  & E_11E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$	& REDUCE-P2	\\
+\text{+ n\\$}                                  & E_6E_5E_4E_3E_0\\$			& REDUCE-P3	\\
+\text{+ n\\$}                                  & E_1E_0\\$				& SHIFT-8	\\
+\text{n\\$}                                    & E_8E_1E_0\\$				& SHIFT-7	\\
+\text{\\$}                                     & E_7E_8E_1E_0\\$			& REDUCE-P5	\\
+\text{\\$}                                     & E_10E_8E_1E_0\\$			& REDUCE-P4	\\
+\text{\\$}                                     & E_1E_0\\$				& SHIFT-2	\\
+                                               & E_2E_1E_0\\$				& REDUCE-P1	\\
+                                               & 					& ACCEPT	\\
 \end{array}
 $$
