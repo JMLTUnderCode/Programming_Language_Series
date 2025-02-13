@@ -139,9 +139,95 @@ Para el Máquina Característica LR(1) se tiene link directo a [LucidChar](#) o 
 
 ![Diagrama en blanco - Página 1 (1)](https://github.com/user-attachments/assets/45314af4-9346-4c21-9be4-84e8abf337ff)
 
-
 ### Parte (b)
+Enumerando las reglas tal que
+* `Regla 1`: + asocia a izquierda. `E + E + E = (E + E) + E`
+* `Regla 2`: else se asocia al if más interno. `if E then if E then E else E = if E then (if E then E else E)`
+* `Regla 3`: if tiene mayor precedencia que +. `E + if E then E else E + E = E + (if E then E else E) + E`
+
+A continuacion se mostraran los estados con conflictos y las acciones a tomar con su respectiva justificación.
+
+* Estado 9:
+	```
+	E -> E+E. {$, +}
+	E -> E.+E {$, +}
+ 	```
+ 	* Se aplica REDUCE con `E -> E+E` para satisfacer `Regla 1`.
+* Estado 13:
+	```
+	E -> if E then E. else E {$, +}
+	E -> if E then E.        {$, +}
+	E -> E.+E                {else, $, +}
+	```
+   	* Se aplica REDUCE con `E -> if E then E` entre ITEM 2 y 3 para satisfacer `Regla 3`.
+* Estado 16:
+  	```
+	E -> E+E. {then, +}
+	E -> E.+E {then, +}
+   	```
+	* Se aplica REDUCE con `E -> E+E` para satisfacer `Regla 1`.
+* Estado 21:
+  	```
+	E -> if E then E. else E {then, +}
+	E -> if E then E.        {then, +}
+	E -> E.+E                {else, then, +}
+   	```
+	* Se aplica REDUCE con `E -> if E then E` entre ITEM 2 y 3 para satisfacer `Regla 3`.
+* Estado 24:
+  	```
+	E -> if E then E else E. {$, +}
+	E -> E.+E                {$, +}
+   	```
+	* Se aplica REDUCE con `E -> if E then E else E` para satisfacer `Regla 3`.
+* Estado 25:
+  	```
+	E -> E+E. {else, $, +}
+	E -> E.+E {else, $, +}
+   	```
+	* Se aplica REDUCE con `E -> E+E` para satisfacer `Regla 1`.
+* Estado 30:
+  	```
+	E -> if E then E. else E {else, $, +}
+	E -> if E then E.        {else, $, +}
+	E -> E.+E                {else, $, +}
+   	```
+	* Se aplica SHIFT con `E -> if E then E. else E` entre ITEM 1 y 2 para satisfacer `Regla 2`.
+	* Se aplica REDUCE con `E -> if E then E` entre ITEM 2 y 3 para satisfacer `Regla 3`.
+* Estado 31:
+	```
+	E -> if E then E else E. {then, +}
+	E -> E.+E                {then, +}
+ 	```
+	* Se aplica REDUCE con `E -> if E then E else E` para satisfacer `Regla 3`.
+* Estado 32:
+  	```
+	E -> E+E. {else, then, +}
+	E -> E.+E {else, then, +}
+   	```
+	* Se aplica REDUCE con `E -> E+E` para satisfacer `Regla 1`.
+* Estado 35
+	```
+	E -> if E then E. else E {else, then, +}
+	E -> if E then E.        {else, then, +}
+	E -> E.+E                {else, then, +}
+ 	```
+	* Se aplica SHIFT con `E -> if E then E. else E` entre ITEM 1 y 2 para satisfacer `Regla 2`.
+ 	* Se aplica REDUCE con `E -> if E then E` entre ITEM 2 y 3 para satisfacer `Regla 3`.
+* Estado 36:
+  	```
+	E -> if E then E else E. {else, $, +}
+	E -> E.+E                {else, $, +}
+   	```
+	* Se aplica REDUCE con `E -> if E then E else E` para satisfacer `Regla 3`.
+* Estado 38:
+  	```
+	E -> if E then E else E. {else, then, +}
+	E -> E.+E                {else, then, +}
+   	```
+	* Se aplica REDUCE con `E -> if E then E else E` para satisfacer `Regla 3`.
 
 ### Parte (c)
+
+
 
 ### Parte (d)
