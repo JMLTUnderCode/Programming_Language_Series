@@ -299,7 +299,7 @@ $$
 \text{+ n then if n then n else n + n\\$}      & E_4E_3E_0\\$				& SHIFT-8	\\
 \text{n then if n then n else n + n\\$}        & E_8E_4E_3E_0\\$			& SHIFT-7	\\
 \text{then if n then n else n + n\\$}          & E_7E_8E_4E_3E_0\\$			& REDUCE-P5	\\
-\text{then if n then n else n + n\\$}          & E_10E_8E_4E_3E_0\\$			& REDUCE-P4	\\
+\text{then if n then n else n + n\\$}          & E_{10}E_8E_4E_3E_0\\$			& REDUCE-P4	\\
 \text{then if n then n else n + n\\$}          & E_4E_3E_0\\$				& SHIFT-5	\\
 \text{if n then n else n + n\\$}               & E_5E_4E_3E_0\\$			& SHIFT-3	\\
 \text{n then n else n + n\\$}                  & E_3E_5E_4E_3E_0\\$			& SHIFT-7	\\
@@ -310,12 +310,12 @@ $$
 \text{else n + n\\$}                           & E_6E_5E_4E_3E_5E_4E_3E_0\\$ 		& SHIFT-9	\\
 \text{n + n\\$}                                & E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$ 	& SHIFT-7	\\
 \text{+ n\\$}                                  & E_7E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$	& REDUCE-P5	\\
-\text{+ n\\$}                                  & E_11E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$	& REDUCE-P2	\\
+\text{+ n\\$}                                  & E_{11}E_9E_6E_5E_4E_3E_5E_4E_3E_0\\$	& REDUCE-P2	\\
 \text{+ n\\$}                                  & E_6E_5E_4E_3E_0\\$			& REDUCE-P3	\\
 \text{+ n\\$}                                  & E_1E_0\\$				& SHIFT-8	\\
 \text{n\\$}                                    & E_8E_1E_0\\$				& SHIFT-7	\\
 \text{\\$}                                     & E_7E_8E_1E_0\\$			& REDUCE-P5	\\
-\text{\\$}                                     & E_10E_8E_1E_0\\$			& REDUCE-P4	\\
+\text{\\$}                                     & E_{10}E_8E_1E_0\\$			& REDUCE-P4	\\
 \text{\\$}                                     & E_1E_0\\$				& SHIFT-2	\\
                                                & E_2E_1E_0\\$				& REDUCE-P1	\\
                                                & 					& ACCEPT	\\
