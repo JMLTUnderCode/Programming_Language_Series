@@ -28,7 +28,7 @@ $$
 ## Pregunta 1
 
 ### Parte (1.a)
-Se define la gramatica libre de contexto $G = (\text{\\{}J, L, X, V\text{\\}}, \text{\\{}null, true, false, \text{\\{}, \text{\\}}, [, ], :, s, n, ,\text{\\}}, P, J)$ con $P$ formado por:
+Se define la gramatica libre de contexto $\large G = (\text{\\{}J, L, X, V\text{\\}}, \text{\\{}null, true, false, \text{\\{}, \text{\\}}, [, ], :, s, n, ,\text{\\}}, P, J)$ con $P$ formado por:
 
 $$
 \large \begin{array}{ccl}
@@ -133,11 +133,7 @@ Codename:       noble
 
 ### Parte (2.a)
 
-Dada la gramática 
-$$
-\large IFT = (\text{\\{} E \text{\\}}, \text{\\{} n, +, if, then, else \text{\\}}, P, E)
-$$ 
-con $P$ formado por:
+Dada la gramática $\large IFT = (\text{\\{} E \text{\\}}, \text{\\{} n, +, if, then, else \text{\\}}, P, E)$ con $P$ formado por:
 
 $$
 \begin{array}{ccl}
@@ -148,11 +144,7 @@ E & \rightarrow & if \text{ E } then \text{ E } else \text{ E } \\
 \end{array}
 $$
 
-La expansión de esta gramatica con un nuevo símbolo inicial no recursivo $S$ queda que 
-$$
-\large IFT' = (\text{\\{}S, E\text{\\}}, \text{\\{} n, +, if, then, else, \text{\\$} \text{\\}}, P', S)
-$$ 
-con $P'$ formado por:
+La expansión de esta gramatica con un nuevo símbolo inicial no recursivo $S$ queda que $\large IFT' = (\text{\\{}S, E\text{\\}}, \text{\\{} n, +, if, then, else, \text{\\$} \text{\\}}, P', S)$ con $P'$ formado por:
 
 $$
 \begin{array}{ccl}
