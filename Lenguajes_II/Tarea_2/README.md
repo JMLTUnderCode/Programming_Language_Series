@@ -26,9 +26,9 @@ Dada la gramática $\large IFT = (\text{\\{} n, +, if, then, else \text{\\}}, \t
 
 $$
 \begin{array}{ccl}
-E & \rightarrow & if~~E~~then~~E~~else~~E \\
-  &  |  & if~~E~~then~~E \\
-  &  |  & E~~+~~E \\
+E & \rightarrow & if~\~E~\~then~\~E~\~else~\~E \\
+  &  |  & if~\~E~\~then~\~E \\
+  &  |  & E~\~+~\~E \\
   &  |  & n 
 \end{array}
 $$
@@ -39,9 +39,9 @@ La gramatica aumentada queda
 
 $$
 \begin{array}{ccll}
-E_0 & \rightarrow & if~~E_1~~then~~E_2~~else~~E_3 & \{~E_0.val \leftarrow E_1.val~~?~~ E_2.val : E_3.val~\} \\
-  &  |  & if~~E_1~~then~~E_2 & \{~E_0.val \leftarrow E_1.val~~?~~ E_2.val : 0~\}\\
-  &  |  & E_1~~+~~E_2 & \{~E_0.va; \leftarrow E_1.val + E_2.val~\}\\
+E_0 & \rightarrow & if~\~E_1~\~then~\~E_2~\~else~\~E_3 & \{~E_0.val \leftarrow E_1.val~~?~~ E_2.val : E_3.val~\} \\
+  &  |  & if~\~E_1~\~then~\~E_2 & \{~E_0.val \leftarrow E_1.val~\~?~\~ E_2.val : 0~\}\\
+  &  |  & E_1~\~+~\~E_2 & \{~E_0.va; \leftarrow E_1.val + E_2.val~\}\\
   &  |  & n & \{~E_0.val \leftarrow n.val~\}
 \end{array}
 $$
@@ -57,11 +57,11 @@ eliminar prefijos comunes de una mejor forma, queda que
 
 $$
 \begin{array}{ccl}
-E  & \rightarrow & if~~E~~then~~E~~E' \\
+E  & \rightarrow & if~\~E~\~then~\~E~\~E' \\
    &  |  & S \\
-E' &  |  & else~~E \\
+E' &  |  & else~\~E \\
    &  |  & \lambda \\
-S  &  \rightarrow & S~~+~~S \\
+S  &  \rightarrow & S~\~+~\~S \\
    &  |  & n 
 \end{array}
 $$
@@ -70,9 +70,9 @@ Eliminamos recursión a izquierda de S, queda que
 
 $$
 \begin{array}{ccl}
-E  & \rightarrow & if~~E~~then~~E~~E' \\
+E  & \rightarrow & if~\~E~\~then~\~E~\~E' \\
    &  |  & S \\
-E' & \rightarrow & else~~E \\
+E' & \rightarrow & else\~~E \\
    &  |  & \lambda \\
 S  & \rightarrow & N~S'\\
 S' & \rightarrow & +NS'\\
@@ -87,10 +87,10 @@ Ahora su representación como gramática de atributo con
 
 $$
 \begin{array}{ccll}
-E_0 & \rightarrow & if~~E_1~~then~~E_2~~E' & \{~ E_0.val \leftarrow E_1.val~~?~~ E_2.val : E'.val~\}\\
+E_0 & \rightarrow & if~\~E_1~\~then~\~E_2~\~E' & \{~ E_0.val \leftarrow E_1.val~\~?~\~ E_2.val : E'.val~\}\\
    &  |  & S & \{~ E_0.val \leftarrow S.val~\}\\ \\
 
-E' & \rightarrow & else~~E & \{~ E'.val \leftarrow E.val~\}\\
+E' & \rightarrow & else~\~E & \{~ E'.val \leftarrow E.val~\}\\
    &  |  & \lambda & \{~ E'.val \leftarrow 0 ~\} \\ \\
 
 S  & \rightarrow & N~S' & \left\{\begin{array}{l} S'.in \leftarrow N.val \\ S.val \leftarrow S'.val \end{array}\right\}\\ \\
