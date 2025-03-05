@@ -21,6 +21,7 @@ $$
 	- [Pregunta 1](#pregunta-1)
 		- [Parte (1.a)](#parte-1a)
 		- [Parte (1.b)](#parte-1b)
+		- [Parte (1.c)](#parte-1c)
 	- [Pregunta 2](#pregunta-2)
 
 
@@ -106,7 +107,128 @@ N  & \rightarrow & E & \{~ N.val \leftarrow E.val ~\}\\
 \end{array}
 $$
 
+### Parte (1.c)
+
+Identificando primeramente cada produccion
+
+$$
+\begin{array}{ccll}
+E_0 & \rightarrow & if~~E_1~~then~~E_2~~E' & \{~ E_0.val \leftarrow E_1.val~~?~~ E_2.val : E'.val~\}\\
+   &  |  & S & \{~ E_0.val \leftarrow S.val~\}\\ \\
+
+E' & \rightarrow & else~~E & \{~ E'.val \leftarrow E.val~\}\\
+   &  |  & \lambda & \{~ E'.val \leftarrow 0 ~\} \\ \\
+
+S  & \rightarrow & N~S' & \left\{\begin{array}{l} S'.in \leftarrow N.val \\ S.val \leftarrow S'.val \end{array}\right\}\\ \\
+
+S'_0 & \rightarrow & +NS'_1& \left\{\begin{array}{l} S'_1.in \leftarrow S'_0.in + N.val \\ S'_0.val \leftarrow S'_1.val \end{array} \right\}\\
+   &  |  & \lambda & \{~ S'_0.val \leftarrow S'_0.in ~\}\\ \\
+
+N  & \rightarrow & E & \{~ N.val \leftarrow E.val ~\}\\
+   &  |  & n & \{~ N.val \leftarrow n.val ~\}
+\end{array}
+$$
+
+Las funciones del reconocedor para cada simbolo no terminal son
+
+* Para `E`
+
+$$
+\begin{array}{ccll}
+E_0 & \rightarrow & if~~E_1~~then~~E_2~~E' & \{~ E_0.val \leftarrow E_1.val~~?~~ E_2.val : E'.val~\}\\
+   &  |  & S & \{~ E_0.val \leftarrow S.val~\}\\
+\end{array}
+$$
+
+$$
+\begin{array}{l}
+\text{ int E()\{ } \\
+~~~~~~~~\text{ if (lookahead != "if") return S(); } \\
+~~~~~~~~\text{ shift("if"); } \\
+~~~~~~~~\text{ int val\_e1 = E(); } \\
+~~~~~~~~\text{ shift("then"); } \\
+~~~~~~~~\text{ return e1\_val == 0 ? EP() : E();; } \\
+\text{ \} } \\
+\end{array}
+$$
+
+* Para `E'`
+
+$$
+\begin{array}{ccll}
+E' & \rightarrow & else~~E & \{~ E'.val \leftarrow E.val~\}\\
+   &  |  & \lambda & \{~ E'.val \leftarrow 0 ~\} \\ \\
+\end{array}
+$$
+
+$$
+\begin{array}{l}
+\text{ int EP()\{ } \\
+~~~~~~~~\text{ if (lookahead != "else") return 0; } \\
+~~~~~~~~\text{ shift("else"); } \\
+~~~~~~~~\text{ return E(); } \\
+\text{ \} } \\
+\end{array}
+$$
+
+* Para `S`
+
+$$
+\begin{array}{ccll}
+S  & \rightarrow & N~S' & \left\{\begin{array}{l} S'.in \leftarrow N.val \\ S.val \leftarrow S'.val \end{array}\right\}\\ \\
+\end{array}
+$$
+
+$$
+\begin{array}{l}
+\text{ int S()\{ } \\
+~~~~~~~~\text{ int sp\_in = N(); } \\
+~~~~~~~~\text{ return SP(sp\_in); } \\
+\text{ \} } \\
+\end{array}
+$$
+
+* Para `S'`
+
+$$
+\begin{array}{ccll}
+S'_0 & \rightarrow & +NS'_1& \left\{\begin{array}{l} S'_1.in \leftarrow S'_0.in + N.val \\ S'_0.val \leftarrow S'_1.val \end{array} \right\}\\
+   &  |  & \lambda & \{~ S'_0.val \leftarrow S'_0.in ~\}\\ \\
+\end{array}
+$$
+
+$$
+\begin{array}{l}
+\text{ int SP(int sp\_in)\{ } \\
+~~~~~~~~\text{ if (lookahead != "+") return sp\_in; } \\
+~~~~~~~~\text{ shift("+"); } \\
+~~~~~~~~\text{ int sp1\_in = sp\_in + F(); } \\
+~~~~~~~~\text{ return SP(sp1\_in); } \\
+\text{ \} } \\
+\end{array}
+$$
+
+* Para `N`
+
+$$
+\begin{array}{ccll}
+N  & \rightarrow & E & \{~ N.val \leftarrow E.val ~\}\\
+   &  |  & n & \{~ N.val \leftarrow n.val ~\}
+\end{array}
+$$
+
+$$
+\begin{array}{l}
+\text{ int N()\{ } \\
+~~~~~~~~\text{ if (lookahead != "if") return valueOf(n); } \\
+~~~~~~~~\text{ shift("if"); } \\
+~~~~~~~~\text{ return E(); } \\
+\text{ \} } \\
+\end{array}
+$$
+
 ## Pregunta 2
 
+Resolución a esta pregunta se encuenta en el archivo `pregunta2.py` que se encuenta en el mismo directorio que este readme. Link directo [acá](https://github.com/JMLTUnderCode/Programming_Language_Series/blob/main/Lenguajes_II/Tarea_2/pregunta2.py).
 
 
