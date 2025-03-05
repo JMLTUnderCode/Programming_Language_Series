@@ -13,7 +13,7 @@ $$
 $$
 
 >[!IMPORTANT]
-> Para una correcta visualización de la tarea, es recomendable clonar el repositorio y usar una extensión que admite Markdown + Latex complejo, dado que durante la resolución de la tarea se usa latex que el motor Markdown de Github no soporta.
+> Para una correcta visualización de la tarea es recomendable clonar el repositorio y usar una extensión que admita Markdown + Latex complejo (Ej. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)), dado que durante la resolución de la tarea se usa latex que el motor Markdown de Github no soporta.
 
 # Indice
 - [Resolución de Tarea 2 - Gramáticas de Operadores y Traducción Dirigida por Sintaxis (Fecha: 06-03-2025)](#resolución-de-tarea-2---gramáticas-de-operadores-y-traducción-dirigida-por-sintaxis-fecha-06-03-2025)
