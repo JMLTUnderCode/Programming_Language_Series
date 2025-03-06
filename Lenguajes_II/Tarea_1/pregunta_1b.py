@@ -1,3 +1,10 @@
+# Universidad Simón Bolívar
+# Departamento de Computación y Tecnología de la Información
+# CI4721 - Lenguajes de Programación II
+# Prof. Ricardo Monascal
+# Enero - Marzo 2025
+# Estudiante: Junior Miguel Lara Torres (17-10303)
+
 import sys
 from jsonp import *
 
