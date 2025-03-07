@@ -9,43 +9,19 @@ import re
 from textwrap import fill
 
 # Estructuras de datos para almacenar la gramática y las precedencias
-#GRAMMAR = {}
-GRAMMAR = {
-	'E': [['E', '+', 'E'], ['E', '*', 'E'], ['id']],
-}
-#INITIAL_SYMBOL = None
-INITIAL_SYMBOL = 'E'
-#PRECEDENCES = {}
-PRECEDENCES = {
-	('id', '+'): '>',
-    ('id', '*'): '>',
-    ('id', '$'): '>',
-
-    ('+', 'id'): '<',
-    ('+', '+'): '>',
-    ('+', '*'): '<',
-    ('+', '$'): '>',
-
-    ('*', 'id'): '<',
-    ('*', '+'): '>',
-    ('*', '*'): '>',
-    ('*', '$'): '>',
-
-    ('$', 'id'): '<',
-    ('$', '+'): '<',
-    ('$', '*'): '<',
-}
-
+GRAMMAR = {}
+INITIAL_SYMBOL = None
+PRECEDENCES = {}
 SPECIAL_SYMBOL = '$'
 BUILD_STATUS = False
-#TERMINALS = [SPECIAL_SYMBOL]
-TERMINALS = ['id', '+', '*', SPECIAL_SYMBOL]
-WIDTH = 90
+TERMINALS = [SPECIAL_SYMBOL]
+WIDTH = 115
 
 # Funcion de predecencias
 F = {}
 G = {}
 
+# Estructura grafo para calculo de funciones de precedencias F y G.
 class Graph:
     def __init__(self):
         self.nodes = {}
@@ -68,6 +44,7 @@ class Graph:
 
 GRAPH = Graph()
 
+# Función para calcular el camino más largo en un grafo dirigido acíclico.
 def longest_path(graph, start_node):
     visited = set()
     stack = []
@@ -94,22 +71,70 @@ def longest_path(graph, start_node):
 
     return distances
 
+# Función para construir el grafo de precedencias y calcular las funciones F y G.
 def build_graph():
     global GRAPH, F, G
 
-    # Agregar nodos para cada terminal
+	# Determinamos las clases de equivalencia de los nodos.
+    equivalence_classes = {}
     for terminal in TERMINALS:
-        GRAPH.add_node('f' + terminal)
-        GRAPH.add_node('g' + terminal)
+        equivalence_classes[terminal] = {terminal}
 
-    # Agregar aristas según las precedencias
     for (t1, t2), op in PRECEDENCES.items():
-        if op == '<':
-            GRAPH.add_edge('g' + t2, 'f' + t1)
-        elif op == '>':
-            GRAPH.add_edge('f' + t1, 'g' + t2)
+        if op == '=':
+            if t1 in equivalence_classes and t2 in equivalence_classes:
+                equivalence_classes[t1].update(equivalence_classes[t2])
+                for t in equivalence_classes[t2]:
+                    equivalence_classes[t] = equivalence_classes[t1]
+            else:
+                print_framed(f"Error: Los símbolos '{t1}' o '{t2}' no están definidos en las clases de equivalencia.")
 
-    # Calcular los caminos más largos para F y G
+    unique_classes = {frozenset(eq) for eq in equivalence_classes.values()}
+    class_map = {t: eq for eq in unique_classes for t in eq}
+
+	## Agregamos los nodos segun sus clases de equivalencias.
+    for eq_class in unique_classes:
+        node = ''.join(sorted(eq_class))
+        GRAPH.add_node('f' + node)
+        GRAPH.add_node('g' + node)
+
+	# Agregamos los arcos entre nodos según las precedencias.
+    for (t1, t2), op in PRECEDENCES.items():
+        if op in ('<', '>'):
+            from_node = ''.join(sorted(class_map[t1]))
+            to_node = ''.join(sorted(class_map[t2]))
+            if op == '<':
+                GRAPH.add_edge('g' + to_node, 'f' + from_node)
+            elif op == '>':
+                GRAPH.add_edge('f' + from_node, 'g' + to_node)
+
+    # Verificar ciclos en el grafo.
+    def has_cycle(graph):
+        visited = set()
+        rec_stack = set()
+
+        def cycle_util(node):
+            if node not in visited:
+                visited.add(node)
+                rec_stack.add(node)
+                for neighbor in graph.edges[node]:
+                    if neighbor not in visited and cycle_util(neighbor):
+                        return True
+                    elif neighbor in rec_stack:
+                        return True
+                rec_stack.remove(node)
+            return False
+
+        for node in graph.nodes:
+            if cycle_util(node):
+                return True
+        return False
+    
+    if has_cycle(GRAPH):
+        print_framed("Error: El grafo contiene ciclos. No es posible construir el analizador sintáctico.")
+        return False
+    
+    # Calcular los caminos más largos para F y G.
     for terminal in TERMINALS:
         f_node = 'f' + terminal
         g_node = 'g' + terminal
@@ -117,17 +142,21 @@ def build_graph():
         G[terminal] = max(longest_path(GRAPH, g_node).values())
 
     #print(GRAPH)
+    return True
 
 # Función para enmarcar y justificar texto
 def print_framed(text, type=1, just='l'):
 	if (type): # 1 = Sin prompt
 		lines = text.split('\n')
 		for line in lines:
+			if line.find("Reduce") != -1:
+				print('| ' + line + (WIDTH - len(line) + 19)*' ' + ' |')
+				return
 			for subline in fill(line, WIDTH).split('\n'):
 				if (just == 'l'):
-					print('| ' + subline.ljust(WIDTH - (4 if "Reduce: " not in subline else -5)) + ' |')
+					print('| ' + subline.ljust(WIDTH - 4) + ' |')
 				else:
-					print('| ' + subline.center(WIDTH - (4 if "Reduce: " not in subline else -5)) + ' |')
+					print('| ' + subline.center(WIDTH - 4) + ' |')
 		return
 
     # Con prompt
@@ -173,7 +202,7 @@ def print_grammar():
 			grammar_text += f"'{terminal1}' tiene {op_text} precedencia que '{terminal2}'\n"
 	print_framed(grammar_text)
 
-# Funcion para verificar gramática de operadores
+# Funcion para verificar gramática de operadores.
 def is_grammar_operators(non_terminal, symbols):
 	for i in range(len(symbols) - 1):
 		if symbols[i].isupper() and symbols[i + 1].isupper():
@@ -190,18 +219,23 @@ def is_grammar_operators(non_terminal, symbols):
 		
 	return True
 
-# Función para manejar la acción RULE
+# Función para manejar la acción RULE.
 def handle_rule(action):
+	global GRAMMAR
+      
+	# Verificamos la cantidad de argumentos.
 	parts = action.split()
 	if len(parts) < 2:
 		print_framed("Error: Acción RULE inválida.")
 		return
 
+	# Verificamos que el no-terminal sea un solo caracter y mayúscula.
 	non_terminal = parts[1]
 	if not non_terminal.isupper() or len(non_terminal) != 1:
 		print_framed(f"Error: El símbolo '{non_terminal}' del lado izquierdo no es un no-terminal válido.")
 		return
 	
+	# Verificamos que la regla tenga simbolos validos.
 	symbols = parts[2:]
 	for symbol in symbols:
 		if (len(symbol) > 1 and any(c.isupper() or c.isnumeric() for c in symbol)) or symbol.isnumeric() or symbol == SPECIAL_SYMBOL:
@@ -212,6 +246,7 @@ def handle_rule(action):
 	if not is_grammar_operators(non_terminal, symbols):
 		return
 
+	# Agregamos la regla a la gramática.
 	if non_terminal not in GRAMMAR:
 		GRAMMAR[non_terminal] = []
 	GRAMMAR[non_terminal].append(symbols)
@@ -224,29 +259,38 @@ def handle_rule(action):
                 
 	print_framed(f"Regla añadida: {non_terminal} -> {' '.join(symbols) if symbols else 'λ'}")
 
-# Función para manejar la acción INIT
+# Función para manejar la acción INIT.
 def handle_init(action):
+    global INITIAL_SYMBOL
+    
+	# Verificamos la cantidad de argumentos.
     parts = action.split()
     if len(parts) != 2:
         print_framed("Error: Acción INIT inválida.")
         return
+    
+	# Verificamos que el no-terminal sea un solo caracter y mayúscula.
     non_terminal = parts[1]
     if not non_terminal.isupper() or len(non_terminal) != 1:
         print_framed(f"ERROR: \"{non_terminal}\" no es un símbolo no-terminal")
         return
-    global INITIAL_SYMBOL
+    
     INITIAL_SYMBOL = non_terminal
     print_framed(f"\"{INITIAL_SYMBOL}\" es ahora el símbolo inicial de la gramática")
 
 
-# Función para manejar la acción PREC
+# Función para manejar la acción PREC.
 def handle_prec(action):
+	global PRECEDENCES
 	status = True
+      
+	# Verificamos la cantidad de argumentos.
 	parts = action.split()
 	if len(parts) != 4:
 		print_framed("Error: Acción PREC inválida.")
 		return
 	
+	# Verificamos que los símbolos sean terminales existenten en la gramatica.
 	terminal1, op, terminal2 = parts[1], parts[2], parts[3]
 	if terminal1 not in TERMINALS:
 		print_framed(f"Error: \"{terminal1}\" no es un símbolo terminal de la gramática.")
@@ -256,10 +300,12 @@ def handle_prec(action):
 		print_framed(f"Error: \"{terminal2}\" no es un símbolo terminal de la gramática.")
 		status = False
 	
+	# Verificar operador valido.
 	if op not in "<>=":
 		print_framed("Error: Operador inválido.")
 		return
 	
+	# Guardamos precedencias.
 	if status:
 		PRECEDENCES[(terminal1, terminal2)] = op
 		if op == '>':
@@ -273,6 +319,9 @@ def handle_prec(action):
 
 # Funcion para manejar la accion BUILD
 def handle_build():
+    global BUILD_STATUS
+    
+	# Verificamos contruccion de gramatica.
     if not GRAMMAR:
         print_framed("Error: La gramática está vacía. No se puede construir el analizador sintáctico.")
         return
@@ -280,8 +329,12 @@ def handle_build():
     if not INITIAL_SYMBOL:
         print_framed("Error: No se ha especificado el símbolo inicial de la gramática.")
 
-    build_graph()
-
+    BUILD_STATUS= True
+    # Verificacion construccion del grafo.
+    if not build_graph():
+        return
+    
+	# Mostramos F y G.
     f_text = "Analizador sintactico construido.\nValores para F:\n"
     for terminal, value in F.items():
         f_text += f"   {terminal}: {value}\n"
@@ -291,22 +344,21 @@ def handle_build():
         g_text += f"   {terminal}: {value}\n"
     
     print_framed(f_text + "\n" + g_text)
-    global BUILD_STATUS
-    BUILD_STATUS= True
 
 def handle_parse(action):
+    # Verificamos estados de construccion.
     if not BUILD_STATUS:
         print_framed("Error: ERROR: Aun no se ha construido el analizador sintactico")
         return
     
+	# Verificamos argumentos.
     parts = action.split(maxsplit=1)
     if len(parts) < 2:
         print_framed("Error: No se proporcionó una palabra a parsear.")
         return
     
+	# Utilizar una expresión regular para dividir la palabra en símbolos
     phrase = parts[1]
-
-    # Utilizar una expresión regular para dividir la palabra en símbolos
     symbols = re.findall(r'[a-z]+|[^\s]', phrase)
 
     # Validar que la palabra solo contenga terminales válidos
@@ -321,24 +373,24 @@ def handle_parse(action):
             print_framed(f"Error: El símbolo '{symbol}' no está definido en la gramática.")
             return
 
-    # Construir la frase según las precedencias
+    # Construir la frase según las precedencias.
     input_phrase = [SPECIAL_SYMBOL] + symbols + [SPECIAL_SYMBOL]
     input_with_precedences = [input_phrase[0]]
     for i in range(len(input_phrase) - 1):
         input_with_precedences.append(PRECEDENCES[(input_phrase[i], input_phrase[i + 1])])
         input_with_precedences.append(input_phrase[i + 1])
 
-    # Inicializar la pila y el punto
+    # Inicializacion de variables.
     stack = []
     point = 2
     start_reduce = 0
     end_reduce = 0
-    width_stack = len(''.join(input_phrase))
+    width_stack = len(' '.join(input_phrase)) - 5
     width_entrance = len(' '.join(input_with_precedences)) + 2
     action = ""
-    print_framed("Stack".center(width_stack+1) + '|' + "Input".center(width_entrance+2) + '|' + "Action".center(WIDTH-width_entrance-width_stack-3))
+    print_framed("Stack".center(width_stack+1) + '|' + "Input".center(width_entrance+2) + '|' + "Action".center(WIDTH-width_entrance-width_stack-7))
     
-	# Función para imprimir el estado actual
+	# Función para imprimir el estado actual del parseo.
     def show_state():
         stack_str = ' '.join(stack)
         stack_str += (width_stack - len(stack_str)) * ' '
@@ -346,12 +398,12 @@ def handle_parse(action):
         # Construir la cadena de entrada con precedencias resaltando la subcadena
         input_phrase_str = ' '.join(input_with_precedences[:point] + ['.'] + input_with_precedences[point:])
         if action.startswith("Reduce"):
-            input_phrase_str = ' '.join(input_with_precedences[:end_reduce]) + ' \033[92m' + ' '.join(input_with_precedences[end_reduce:start_reduce+1]) + '\033[0m ' + '.' + ' '.join(input_with_precedences[start_reduce+1:])
-            input_phrase_str += (width_entrance - len(input_phrase_str)+9) * ' '
+            input_phrase_str = ' '.join(input_with_precedences[:end_reduce]) + ' \033[38;5;82m\033[5m' + ' '.join(input_with_precedences[end_reduce:start_reduce+1]) + '\033[25m\033[0m ' + '.' + ' '.join(input_with_precedences[start_reduce+1:])
+            input_phrase_str += (width_entrance - len(input_phrase_str)+23)*' '
             print_framed(f"{stack_str} | {input_phrase_str} | {action}")
             return
             
-        input_phrase_str += (width_entrance - len(input_phrase_str)) * ' '
+        input_phrase_str += (width_entrance - len(input_phrase_str))*' '
         print_framed(f"{stack_str} | {input_phrase_str} | {action}")
 
     # Función para reducir según la gramática
@@ -372,7 +424,7 @@ def handle_parse(action):
                                 start_reduce = start_point
                                 end_reduce = end_point
 
-                                # Actualizar la pila
+                                # Actualizar la pila y verificar si se puede reducir.
                                 aux_stack = stack.copy()
                                 for k in range(len(production)-1, -1, -1):
                                     if aux_stack[-1] == production[k]:
@@ -387,43 +439,53 @@ def handle_parse(action):
                                 stack = aux_stack.copy()
                                 stack.append(non_term)
 
-                                # Actualizar la relación de precedencia en entrada_con_precedencias
+                                # Verificar caso borde, el final cuando se tiene [$ $]
                                 if input_with_precedences[end_point - 1] == input_with_precedences[start_point + 1] == SPECIAL_SYMBOL:
                                     action = "Accept"
                                     input_with_precedences[end_point:start_point+1] = []
                                     point = end_point
                                     show_state()
                                     return True
-								
-                                point = end_point+1                                
+                                
+								# Actualizar la relación de precedencia en entrada_con_precedencias
+                                point = end_point+1                            
                                 input_with_precedences[end_point:start_point+1] = [PRECEDENCES[(input_with_precedences[end_point - 1], input_with_precedences[start_point + 1])]]
                                 return True
         return False
 
     # Proceso de parseo
-    #show_state()
     status = True
-    while status:    
+    while status:
+        # Verificamos borde maximo de la frase con precedencias.    
         if point >= len(input_with_precedences):
             print_framed("Error: Punto fuera de rango.")
             break
+        
+        # Verificamos estapa final de parseo.
         if input_with_precedences[point-1] == SPECIAL_SYMBOL and len(stack) == 1 and stack[0] == INITIAL_SYMBOL:
             break
+        
+        # Verificamos si en la etapa final el ultimo simbolo no terminal no es el inicial.
         elif input_with_precedences[point-1] == SPECIAL_SYMBOL and len(stack) == 1 and stack[0] != INITIAL_SYMBOL:
             print_framed("Error: Simbolo final en pila es distinto a simbolo inicial.")
-        elif input_with_precedences[point-1] == '<':
+            
+		# Realizamos shift.
+        elif input_with_precedences[point-1] == '<' or input_with_precedences[point-1] == '=':
             action = "Shift"
             show_state()
             if input_with_precedences[point] in TERMINALS:
                 stack.append(input_with_precedences[point])
             point += 2
+            
+		# Realizamos reduce.
         elif input_with_precedences[point-1] == '>':
             status = reduce()
+            
         else:
             print_framed("Error: Símbolo desconocido.")
             break
 
-# Bucle principal
+# Manejados principal de acciones.
 def main():
 	while True:
 		action = input("|\\.~ ")
@@ -447,7 +509,9 @@ def main():
 
 if __name__ == "__main__":
 	print('+' + '-' * (WIDTH - 2) + '+')
-	acciones_disponibles = """******************************\n*    Acciones disponibles    *\n************                            ***********\n* RULE <non-terminal> [<symbol> <symbol> ...]     *\n* INIT <non-terminal>                             *\n* PREC <terminal> <op> <terminal>                 *\n* BUILD                                           *\n* PARSE <string>                                  *\n* SHOW                                            *\n* EXIT                                            *\n*                                                 *\n* -> Note: Minúsculas admitidas para acciones.    *\n***************************************************\n
+	print(f"|                                          ******************************                                         |")
+	print(f"|                                          *    {'\033[4;49;5m'}Acciones disponibles{'\033[0m'}    *                                         |")
+	acciones_disponibles = f"""************                            ***********\n* RULE <non-terminal> [<symbol> <symbol> ...]     *\n* INIT <non-terminal>                             *\n* PREC <terminal> <op> <terminal>                 *\n* BUILD                                           *\n* PARSE <string>                                  *\n* SHOW                                            *\n* EXIT                                            *\n*                                                 *\n* -> Note: Minúsculas admitidas para acciones.    *\n***************************************************\n
     """
 	print_framed(acciones_disponibles, 1, 'c')
 	main()
