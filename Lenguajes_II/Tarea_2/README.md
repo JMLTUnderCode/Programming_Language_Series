@@ -231,4 +231,23 @@ $$
 
 Resolución a esta pregunta se encuenta en el archivo `pregunta2.py` que se encuenta en el mismo directorio que este readme. Link directo [acá](https://github.com/JMLTUnderCode/Programming_Language_Series/blob/main/Lenguajes_II/Tarea_2/pregunta2.py).
 
-
+Generar un Envirotment
+```
+python3 -m venv venv
+```
+Activalo
+```
+source venv/bin/activate
+```
+Instala PyTest
+```
+pip install pytest
+```
+Ejecuta PyTest
+```
+pytest
+```
+Ejecuta Programa
+```
+python3 pregunta2.py
+```
