@@ -116,28 +116,28 @@ def build_graph():
         F[terminal] = max(longest_path(GRAPH, f_node).values())
         G[terminal] = max(longest_path(GRAPH, g_node).values())
 
-    print(GRAPH)
+    #print(GRAPH)
 
 # Función para enmarcar y justificar texto
-def print_framed(texto, type=1, just='l'):
+def print_framed(text, type=1, just='l'):
 	if (type): # 1 = Sin prompt
-		lineas = texto.split('\n')
-		for linea in lineas:
-			for sublinea in fill(linea, WIDTH).split('\n'):
+		lines = text.split('\n')
+		for line in lines:
+			for subline in fill(line, WIDTH).split('\n'):
 				if (just == 'l'):
-					print('| ' + sublinea.ljust(WIDTH - (4 if "Reduce: " not in sublinea else -5)) + ' |')
+					print('| ' + subline.ljust(WIDTH - (4 if "Reduce: " not in subline else -5)) + ' |')
 				else:
-					print('| ' + sublinea.center(WIDTH - (4 if "Reduce: " not in sublinea else -5)) + ' |')
+					print('| ' + subline.center(WIDTH - (4 if "Reduce: " not in subline else -5)) + ' |')
 		return
 
     # Con prompt
-	lineas = texto.split('\n')
-	for linea in lineas:
-		for sublinea in fill(linea, WIDTH).split('\n'):
+	lines = text.split('\n')
+	for line in lines:
+		for subline in fill(line, WIDTH).split('\n'):
 			if (just == 'l'):
-				print('|\\.~ ' + sublinea.ljust(WIDTH-7) + ' |')
+				print('|\\.~ ' + subline.ljust(WIDTH-7) + ' |')
 			else:
-				print('|\\.~ ' + sublinea.center(WIDTH-7) + ' |')
+				print('|\\.~ ' + subline.center(WIDTH-7) + ' |')
 
 # Función para imprimir toda la gramática
 def print_grammar():
@@ -304,10 +304,10 @@ def handle_parse(action):
         print_framed("Error: No se proporcionó una palabra a parsear.")
         return
     
-    word = parts[1]
+    phrase = parts[1]
 
     # Utilizar una expresión regular para dividir la palabra en símbolos
-    symbols = re.findall(r'[a-z]+|[^\s]', word)
+    symbols = re.findall(r'[a-z]+|[^\s]', phrase)
 
     # Validar que la palabra solo contenga terminales válidos
     for symbol in symbols:
@@ -322,95 +322,103 @@ def handle_parse(action):
             return
 
     # Construir la frase según las precedencias
-    entrada = [SPECIAL_SYMBOL] + symbols + [SPECIAL_SYMBOL]
-    entrada_con_precedencias = [entrada[0]]
-    for i in range(len(entrada) - 1):
-        entrada_con_precedencias.append(PRECEDENCES[(entrada[i], entrada[i + 1])])
-        entrada_con_precedencias.append(entrada[i + 1])
+    input_phrase = [SPECIAL_SYMBOL] + symbols + [SPECIAL_SYMBOL]
+    input_with_precedences = [input_phrase[0]]
+    for i in range(len(input_phrase) - 1):
+        input_with_precedences.append(PRECEDENCES[(input_phrase[i], input_phrase[i + 1])])
+        input_with_precedences.append(input_phrase[i + 1])
 
     # Inicializar la pila y el punto
-    pila = []
+    stack = []
     point = 2
     start_reduce = 0
     end_reduce = 0
-    width_pila = len(''.join(entrada))
-    width_entrada = len(' '.join(entrada_con_precedencias)) + 2
+    width_stack = len(''.join(input_phrase))
+    width_entrance = len(' '.join(input_with_precedences)) + 2
     action = ""
-    print_framed("Stack".center(width_pila+1) + '|' + "Input".center(width_entrada+2) + '|' + "Action".center(WIDTH-width_entrada-width_pila-3))
-    # Función para imprimir el estado actual
-    def imprimir_estado():
-        pila_str = ' '.join(pila)
-        pila_str += (width_pila - len(pila_str)) * ' '
+    print_framed("Stack".center(width_stack+1) + '|' + "Input".center(width_entrance+2) + '|' + "Action".center(WIDTH-width_entrance-width_stack-3))
+    
+	# Función para imprimir el estado actual
+    def show_state():
+        stack_str = ' '.join(stack)
+        stack_str += (width_stack - len(stack_str)) * ' '
     
         # Construir la cadena de entrada con precedencias resaltando la subcadena
-        entrada_str = ' '.join(entrada_con_precedencias[:point] + ['.'] + entrada_con_precedencias[point:])
+        input_phrase_str = ' '.join(input_with_precedences[:point] + ['.'] + input_with_precedences[point:])
         if action.startswith("Reduce"):
-            entrada_str = ' '.join(entrada_con_precedencias[:end_reduce]) + ' \033[92m' + ' '.join(entrada_con_precedencias[end_reduce:start_reduce+1]) + '\033[0m ' + '.' + ' '.join(entrada_con_precedencias[start_reduce+1:])
-            entrada_str += (width_entrada - len(entrada_str)+9) * ' '
-            print_framed(f"{pila_str} | {entrada_str} | {action}")
+            input_phrase_str = ' '.join(input_with_precedences[:end_reduce]) + ' \033[92m' + ' '.join(input_with_precedences[end_reduce:start_reduce+1]) + '\033[0m ' + '.' + ' '.join(input_with_precedences[start_reduce+1:])
+            input_phrase_str += (width_entrance - len(input_phrase_str)+9) * ' '
+            print_framed(f"{stack_str} | {input_phrase_str} | {action}")
             return
             
-        entrada_str += (width_entrada - len(entrada_str)) * ' '
-        print_framed(f"{pila_str} | {entrada_str} | {action}")
+        input_phrase_str += (width_entrance - len(input_phrase_str)) * ' '
+        print_framed(f"{stack_str} | {input_phrase_str} | {action}")
 
     # Función para reducir según la gramática
-    def reducir():
-        nonlocal point, start_reduce, end_reduce, entrada_con_precedencias, pila, action
+    def reduce():
+        nonlocal point, start_reduce, end_reduce, input_with_precedences, stack, action
         start_point = point-1
         if (start_point > -1):
-            if entrada_con_precedencias[start_point] == '>':
+            if input_with_precedences[start_point] == '>':
                 end_point = start_point - 1
-                while entrada_con_precedencias[end_point] != '<':
+                while input_with_precedences[end_point] != '<':
                     end_point -= 1
-                subcadena = entrada_con_precedencias[end_point + 1: start_point]
+                substring = input_with_precedences[end_point + 1: start_point]
 
-                for nt, producciones in GRAMMAR.items():
-                    for produccion in producciones:
-                        for symbol in subcadena:
-                            if symbol in produccion:
+                for non_term, productions in GRAMMAR.items():
+                    for production in productions:
+                        for symbol in substring:
+                            if symbol in production:
                                 start_reduce = start_point
                                 end_reduce = end_point
-                                action = f"Reduce: {nt} -> " + ' '.join(produccion)
-                                imprimir_estado()
 
                                 # Actualizar la pila
-                                for _ in produccion:
-                                    pila.pop()
-                                pila.append(nt)
+                                aux_stack = stack.copy()
+                                for k in range(len(production)-1, -1, -1):
+                                    if aux_stack[-1] == production[k]:
+                                        aux_stack.pop()
+                                    else:
+                                        action = f"Decline, cannot be reduced by {non_term} -> " + ' '.join(production)
+                                        show_state()
+                                        return False
+                                    
+                                action = f"Reduce: {non_term} -> " + ' '.join(production)
+                                show_state()
+                                stack = aux_stack.copy()
+                                stack.append(non_term)
 
                                 # Actualizar la relación de precedencia en entrada_con_precedencias
-                                if entrada_con_precedencias[end_point - 1] == entrada_con_precedencias[start_point + 1] == SPECIAL_SYMBOL:
+                                if input_with_precedences[end_point - 1] == input_with_precedences[start_point + 1] == SPECIAL_SYMBOL:
                                     action = "Accept"
-                                    entrada_con_precedencias[end_point:start_point+1] = []
+                                    input_with_precedences[end_point:start_point+1] = []
                                     point = end_point
-                                    imprimir_estado()
+                                    show_state()
                                     return True
 								
                                 point = end_point+1                                
-                                entrada_con_precedencias[end_point:start_point+1] = [PRECEDENCES[(entrada_con_precedencias[end_point - 1], entrada_con_precedencias[start_point + 1])]]
+                                input_with_precedences[end_point:start_point+1] = [PRECEDENCES[(input_with_precedences[end_point - 1], input_with_precedences[start_point + 1])]]
                                 return True
         return False
 
     # Proceso de parseo
-    #imprimir_estado()
-    while True:    
-        if point >= len(entrada_con_precedencias):
+    #show_state()
+    status = True
+    while status:    
+        if point >= len(input_with_precedences):
             print_framed("Error: Punto fuera de rango.")
             break
-        if entrada_con_precedencias[point-1] == SPECIAL_SYMBOL and len(pila) == 1 and pila[0] == INITIAL_SYMBOL:
+        if input_with_precedences[point-1] == SPECIAL_SYMBOL and len(stack) == 1 and stack[0] == INITIAL_SYMBOL:
             break
-        elif entrada_con_precedencias[point-1] == SPECIAL_SYMBOL and len(pila) == 1 and pila[0] != INITIAL_SYMBOL:
+        elif input_with_precedences[point-1] == SPECIAL_SYMBOL and len(stack) == 1 and stack[0] != INITIAL_SYMBOL:
             print_framed("Error: Simbolo final en pila es distinto a simbolo inicial.")
-        elif entrada_con_precedencias[point-1] == '<':
+        elif input_with_precedences[point-1] == '<':
             action = "Shift"
-            imprimir_estado()
-            if entrada_con_precedencias[point] in TERMINALS:
-                pila.append(entrada_con_precedencias[point])
+            show_state()
+            if input_with_precedences[point] in TERMINALS:
+                stack.append(input_with_precedences[point])
             point += 2
-        elif entrada_con_precedencias[point-1] == '>':
-            if not reducir():
-                print_framed("Error: No se puede reducir.")
-                break
+        elif input_with_precedences[point-1] == '>':
+            status = reduce()
         else:
             print_framed("Error: Símbolo desconocido.")
             break
