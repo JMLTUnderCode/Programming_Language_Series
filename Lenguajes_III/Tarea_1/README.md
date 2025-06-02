@@ -90,12 +90,77 @@ Se tiene en parte inicial el siguiente conjunto de variables vivas inicial, inst
 
 ### Parte (2.a)
 
+Se describe el siguiente funcionamiento de `label(n)`.
+
+* $label(n) \leftarrow max(label(c_{left}), label(c_{middle}, label(c_{right}))$ con la condición $label(c_{left}) \neq label(c_{middle} \neq label(c_{right}$
+* $label(n) \leftarrow max(label(c_{left}, label(c_{middle}+1)))$ con la condición $label(c_{left} \neq label(c_{middle} \land label(c_{middle}) = label(c_{right})$
+* $label(n) \leftarrow label(c_{left} + 2) $ con la condicion $label(c_{left}) = label(c_{middle}) = label(c_{right})$
+
 ### Parte (2.b)
+
+- Si se cumple que $label(c_{left}) \neq label(c_{middle}) \neq label(c_{right})$ y los valores son $k > h > n$:
+	- Se genera el código para $c_{left}$ usando la base `b` y el resultado se almacena en $R_{b+k−1}$
+	- Se genera el código para $c_{middle}$ con la misma base `b` y se guarda en $R_{b+h−1}$
+	- Se genera el código para $c_{right}$ también con base `b` y se almacena en $R_{b+n−1}$
+
+    El código resultante es: $\otimes R_{b+k−1}R_{b+k−1}R_{b+h−1}R_{b+n−1}$
+
+- Si hay al menos dos hijos con la misma etiqueta, suponiendo $k > m$ y que $k$ es diferente:
+	- Se genera el código para el nodo $c_{i}$ con etiqueta `k` usando base `b`, guardando el resultado en $R_{b+k-1}$
+	- Para los nodos $c_{i}$ y $c_{j}$, se genera código usando las bases `b` y `b+1`, almacenando los resultados en $R_{b+k−2}$ y $R_{b+k−1}$ respectivamente.
+  
+    El código generado es: $\otimes R_{b+k−1} := \otimes R_{b+k−1}R_{b+k−1}R_{b+k−2}$
+
+- Cuando $label(c_{left}) = label(c_{middle}) = label(c_{right})$, los hijos requerirán $k − 2$ registros:
+	- Para $c_{left}$, el código se genera con base `b` y se guarda en $R_{b+k−3}$
+	- Para $c_{middle}$, se usa la base `b + 1` y el resultado se almacena en $R_{b+k−2}$
+	- Para $c_{right}$, se utiliza la base `b + 2` y se guarda en $R_{b+k−1}$
+ 
+    El código final es: $\otimes R_{b+k−1}R_{b+k−3}R_{b+k−2}R_{b+k−1}$
 
 ### Parte (2.c)
 
+A continuación se muestra cómo se genera el código FAC a partir del AST dado, donde los números junto a cada nodo indican el valor del label calculado para ese nodo.
+
+![AST](2c.png)
+
+El proceso de generación de código es el siguiente:
+
+Comenzando desde la raíz, se toma la base b = 1, por lo que se emplearán los registros R1, R2 y R3. Dado que label(cl) es mayor que label(cr), se inicia el recorrido por el subárbol izquierdo.
+
+- Para el nodo cl, la base es b = 1 y el resultado se almacena en R3. Como sus tres hijos tienen el mismo label, se procede así:
+  - El hijo cll utiliza la base b = 1 y su resultado va en R1. Se genera la instrucción: LD R1, a
+  - El hijo clm usa la base b = 2 y almacena el resultado en R2. Se genera: LD R2, b
+  - El hijo clr toma la base b = 3 y guarda el resultado en R3. Se genera: LD R3, c
+
+Al volver al nodo cl, se emite la instrucción TERN R3, R1, R2, R3, que corresponde a la operación ternaria a ? b : c, dejando el resultado en R3.
+
+- Para el nodo cr, la base es b = 1 y el resultado se guarda en R2:
+  - El hijo crl emplea la base b = 1 y almacena el resultado en R1. Se genera: LD R1, d
+  - El hijo crr usa la base b = 2 y guarda el resultado en R2. Se genera: LD R2, e
+
+Al regresar al nodo cr, se produce la instrucción MUL R2, R1, R2.
+
+- Finalmente, al retornar a la raíz, se emite la instrucción ADD R3, R2, R3.
+
+Por lo tanto, el código FAC generado es:
+
+$$
+\begin{array}{l} 
+\text{LD R1, a} \\
+\text{LD R2, b} \\
+\text{LD R3, c} \\
+\text{TERN R3, R1, R2, R3} \\
+\text{LD R1, d} \\
+\text{LD R2, e} \\
+\text{MUL R2, R1, R2} \\
+\text{ADD R3, R2, R3} \\
+\end{array}
+$$
+
 ### Parte (2.d)
 
+Que diosito nos acompañe.
 
 ## Pregunta 3
 
@@ -282,3 +347,5 @@ Asi nos queda el grafo de flujo como sigue
 ![Grafo de Flujo](<4c.png>)
 
 ### Parte (4.d)
+
+Que diosito nos acompañe. x2
