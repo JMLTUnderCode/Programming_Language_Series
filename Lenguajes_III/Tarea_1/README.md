@@ -12,6 +12,9 @@ $$
 \end{matrix}
 $$
 
+>[!IMPORTANT]
+> Para una correcta visualización de la tarea es recomendable clonar el repositorio y usar una extensión que admita Markdown + Latex complejo (Ej. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)), dado que durante la resolución de la tarea se usa latex que el motor Markdown de Github no soporta.
+
 # Indice
 - [Resolución de Tarea 1 - Generación de Código (Fecha: 01-06-2025)](#resolución-de-tarea-1---generación-de-código-fecha-01-06-2025)
 - [Indice](#indice)
