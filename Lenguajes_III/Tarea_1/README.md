@@ -225,7 +225,44 @@ $$
 
 ### Parte (4.a)
 
+Se planteaeel siguiente pseudo-código
+
+$$
+\begin{array}{l}
+\text{n = number} \\
+\text{count = 0} \\
+\text{while (n != 1) do} \\
+~~~~~~~~\text{if (n\%2 == 2) do} \\
+~~~~~~~~~~~~~~~~\text{n = n/2} \\
+~~~~~~~~~~~~~~~~\text{count++} \\
+~~~~~~~~\text{else do} \\
+~~~~~~~~~~~~~~~~\text{n = 3*n + 1} \\
+~~~~~~~~~~~~~~~~\text{count++} \\
+\text{print(count)} \\
+\end{array}
+$$
+
 ### Parte (4.b)
+
+El TAC asociado es el siguiente
+
+$$
+\begin{array}{l}
+\text{~ 1 : n := number} \\
+\text{~ 2 : count := 0} \\
+\text{~ 3 : if n == 1 goto (13)} \\
+\text{~ 4 : t1 := n\%2} \\
+\text{~ 5 : if t1 != 0 goto (9)} \\
+\text{~ 6 : count := count + 1} \\
+\text{~ 7 : n := n/2} \\
+\text{~ 8 : goto (3)} \\
+\text{~ 9 : count := count + 1} \\
+\text{10 : t2 := 3*n} \\
+\text{11 : n := t2 + 1} \\
+\text{12 : goto (3)} \\
+\text{13 : print count} \\
+\end{array}
+$$
 
 ### Parte (4.c)
 
