@@ -266,4 +266,16 @@ $$
 
 ### Parte (4.c)
 
+Se tienen que las instrucciones lider son:
+* (1): Primera instrucción.
+* (3): Destino de goto en (8) y (12).
+* (4): Instrucción siguiente a goto.
+* (6): Instrucción siguiente a goto.
+* (9): Instrucción siguiente a goto.
+* (13): Destino de goto en (3).
+
+Asi nos queda el grafo de flujo como sigue
+
+![Grafo de Flujo](<4c.png>)
+
 ### Parte (4.d)
