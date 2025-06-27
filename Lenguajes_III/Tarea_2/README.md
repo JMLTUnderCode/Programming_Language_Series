@@ -315,6 +315,9 @@ Describe cada estado como sigue:
     *   **Variables Indirectas:** $t1$, con asignación $t1 := 3 * i$
         *   Tupla de $t1$: $(i, 3, 0)$
 
+	>[!IMPORTANT]
+	> Es crucial señalar que $t2$ **NO** es una **variable de inducción**. Esto se debe a que $t2$ se define mediante el acceso a un elemento de un arreglo ($t2 := a[i]$), y el valor de los elementos de un arreglo no necesariamente sigue una función lineal respecto al índice $i$, sino que depende del contenido del arreglo en sí.
+
 	Una vez identificadas las familias de variables de inducción, se procede a aplicar el **algoritmo de reducción de fuerza** para optimizar las operaciones.
 
     *   **Introducción de Nueva Variable Temporal:**
