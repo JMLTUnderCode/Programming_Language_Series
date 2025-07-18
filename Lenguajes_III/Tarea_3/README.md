@@ -70,14 +70,14 @@ Para modelar el análisis de "variables potencialmente cero" en Datalog, usaremo
 	* **program_variable(V)**: V es una variable del programa (ej: program_variable(a)).
     * **block(B)**: B es un bloque básico en el grafo de flujo (ej: block(B1)).
     * **instruction(B, I)**: La instrucción I existe dentro del bloque B (ej: instruction(B1, 1)).
-    * **successor_block(B_from, B_to)**: Existe una arista de flujo de control de B_from a B_to (ej: successor_block(B1, B2)).
+    * **successor_block(B_from, B_to)**: Existe una arista de flujo de control de `B_from` a `B_to` (ej: successor_block(B1, B2)).
     * **is_entry_block(B)**: B es el bloque de entrada inicial del programa.
-    * **first_instruction_in_block(B, I_first)**: I_first es el índice de la primera instrucción en B.
-    * **next_instruction_in_block(B, I_curr, I_next)**: I_next es la instrucción que sigue inmediatamente a I_curr dentro del bloque B.
-    * **last_instruction_in_block(B, I_last)**: I_last es el índice de la última instrucción en B.
+    * **first_instruction_in_block(B, I_first)**: `I_first` es el índice de la primera instrucción en B.
+    * **next_instruction_in_block(B, I_curr, I_next)**: `I_next` es la instrucción que sigue inmediatamente a `I_curr` dentro del bloque B.
+    * **last_instruction_in_block(B, I_last)**: `I_last` es el índice de la última instrucción en B.
     * **is_arithmetic_assignment(B, I, V)**: La instrucción I en B es una asignación aritmética a V (ej: V := E1 op E2 o V := op E1).
     * **is_advance_instruction(B, I, V)**: La instrucción I en B es advance V (equivalente a V := V + 1).
-    * **is_division_instruction(B, I, Denominator_V)**: La instrucción I en B es una división donde Denominator_V es la variable en el denominador.
+    * **is_division_instruction(B, I, Denominator_V)**: La instrucción I en B es una división donde `Denominator_V` es la variable en el denominador.
   
   * **Predicados IDB (información inferida por el programa Datalog)**
 	* **pz_before_instr(B, I, V)**: La variable V es potencialmente cero en el punto del programa inmediatamente antes de la instrucción I en el bloque B.
@@ -145,9 +145,117 @@ Para modelar el análisis de "variables potencialmente cero" en Datalog, usaremo
 
 ### Parte (3.a)
 
+Para las reglas de pasos largos tenemos que, la coincidencia por caso
+$$
+\frac{
+	\begin{matrix}
+	\langle e, \sigma \rangle \to m & \langle e_k, \sigma \rangle \to m_k & \langle e_j, \sigma \rangle \to m_j & \langle c_j, \sigma \rangle \to \sigma'
+	\end{matrix}
+}{
+	\langle \text{switch } e ~ \langle \text{case } e_i \text{ do } c_i  | 0 \leq i < n  \rangle, \sigma \rangle \to \sigma'
+}
+$$
+
+Donde:
+  * $0 \leq j < n$
+  * $m = m_j$
+  * $c_j$ corresponde a la instruccion de caso de la expresión $e_j$.
+  * $m \neq m_k$ para todo $0 \leq k \leq j - 1$
+
+En caso de no coincidencia tenemos que
+$$
+\frac{
+	\begin{matrix}
+	\langle e, \sigma \rangle \to m & \langle e_j, \sigma \rangle \to m_j
+	\end{matrix}
+}{
+	\langle \text{switch } e ~ \langle \text{case } e_i \text{ do } c_i  | 0 \leq i < n  \rangle, \sigma \rangle \to \sigma
+}
+$$
+
+Donde:
+  * $m \neq m_j$ para todo $0 \leq j < n$
+
 ### Parte (3.b)
 
+Para las reglas de pasos cortos tenemos que, cuando **switch** se esta evaluando
+$$
+\frac{
+	\begin{matrix}
+	\langle e, \sigma \rangle \to_1 \langle e', \sigma' \rangle
+	\end{matrix}
+}{
+	\langle \text{switch } e ~ \langle \text{case } e_i \text{ do } c_i  | 0 \leq i < n  \rangle, \sigma \rangle \to_1 \langle \text{switch } e' ~ \langle \text{case } e_j \text{ do } c_j  | 0 \leq j < n  \rangle, \sigma' \rangle
+}
+$$
+
+Para cuando la expresion del **case** se esta evaluando tenemos que
+$$
+\frac{
+	\begin{matrix}
+	\langle e, \sigma \rangle |\to m & \langle e_0, \sigma \rangle \to_1 \langle e'_0, \sigma' \rangle
+	\end{matrix}
+}{
+	\langle \text{switch } e ~ \langle \text{case } e_0 \text{ do } c_0  ; Complement  \rangle, \sigma \rangle \to_1 \langle \text{switch } e ~ \langle \text{case } e'_0 \text{ do } c_0 ; Complement  \rangle, \sigma' \rangle
+}
+$$
+
+Donde:
+* $Complement = \langle \text{case } e_i \text{ do } c_i | 1 \leq i < n \rangle$
+
+En caso de coincidencia del primer **case** tenemos que
+$$
+\frac{
+	\begin{matrix}
+	\langle e, \sigma \rangle |\to m & \langle e_0, \sigma \rangle \to m_0
+	\end{matrix}
+}{
+	\langle \text{switch } e ~ \langle \text{case } e_0 \text{ do } c_0  ; Complement  \rangle, \sigma \rangle \to_1 \langle e_0, \sigma \rangle
+}
+$$
+
+Donde:
+* $m = m_0$
+* $Complement = \langle \text{case } e_i \text{ do } c_i | 1 \leq i < n \rangle$
+
+En caso de no coincidencia del primer **case** tenemos que 
+$$
+\frac{
+	\begin{matrix}
+	\langle e, \sigma \rangle |\to m & \langle e_0, \sigma \rangle \to m_0
+	\end{matrix}
+}{
+	\langle \text{switch } e ~ \langle \text{case } e_0 \text{ do } c_0  ; Complement  \rangle, \sigma \rangle \to_1 \langle \text{switch } e | \langle Complement \rangle, \sigma \rangle
+}
+$$
+
+Donde:
+* $m \neq m_0$
+* $Complement = \langle \text{case } e_i \text{ do } c_i | 1 \leq i < n \rangle$
+
+Finalmente, cuando no queden casos por evaluar tenemos que
+$$
+\frac{
+	\begin{matrix}
+	\langle e, \sigma \rangle |\to m
+	\end{matrix}
+}{
+	\langle \text{switch } e ~ \langle \emptyset  \rangle, \sigma \rangle \to_1 \langle \text{skip}, \sigma \rangle
+}
+$$
+
 ### Parte (3.c)
+
+Definamos los dos siguientes conjuntos
+
+* $\displaystyle Set_1 =  \bigcup_{j=0}^{n-1} (\sigma, \sigma') | \mathcal{A}[[e]] = \mathcal{A}[[e_j]]\sigma \land \forall i < j : \mathcal{A}[[e]] \sigma \neq \mathcal{A}[[e_i]]\sigma \land (\sigma, \sigma') \in \mathcal{C}[[c_j]]$ representa la primera
+coincidencia de alguna expresión $e_j$ con $e$.
+* $Set_2 = \{(\sigma, \sigma) | \forall i \in [0, n-1] : \mathcal{A}[[e]]\sigma \neq \mathcal{A}[[e_i]]\sigma\}$ representa el caso por base, en el que niguna de las expresiones $e_i$ coinciden con la expresión $e$.
+
+Entonces, la regla denotacional para la instrucción **switch - case** es
+$$
+\mathcal{C} [[\text{switch } e \langle \text{ case } e_0 \text{ do } c_0 ; ... ; \text{ case } e_{n-1} \text{ do } c_{n-1} \rangle]] = Set_1 \cup Set_2
+$$
 
 ## Pregunta 4
 
