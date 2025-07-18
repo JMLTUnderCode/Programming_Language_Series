@@ -1,4 +1,4 @@
-# Resolución de Tarea 3 - Análisis Inter-procedimental y Semántica Formal (Fecha: 16-06-2025)
+# Resolución de Tarea 3 - Análisis Inter-procedimental y Semántica Formal (Fecha: 18-06-2025)
 
 $$
 \begin{matrix}
@@ -16,7 +16,7 @@ $$
 > Para una correcta visualización de la tarea es recomendable clonar el repositorio y usar una extensión que admita Markdown + Latex complejo (Ej. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)), dado que durante la resolución de la tarea se usa latex que el motor Markdown de Github no soporta.
 
 # Indice
-- [Resolución de Tarea 3 - Análisis Inter-procedimental y Semántica Formal (Fecha: 16-06-2025)](#resolución-de-tarea-3---análisis-inter-procedimental-y-semántica-formal-fecha-16-06-2025)
+- [Resolución de Tarea 3 - Análisis Inter-procedimental y Semántica Formal (Fecha: 18-06-2025)](#resolución-de-tarea-3---análisis-inter-procedimental-y-semántica-formal-fecha-18-06-2025)
 - [Indice](#indice)
 	- [Pregunta 1](#pregunta-1)
 		- [Parte (1.a)](#parte-1a)
