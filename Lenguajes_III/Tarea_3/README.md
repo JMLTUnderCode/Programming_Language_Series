@@ -33,13 +33,13 @@ $$
 
 ### Parte (1.a)
 
-Se debe tener en cuenta el siguiente etiquetado a nivel grafo
+Se debe tener en cuenta el siguiente etiquetado y posteriormente el grafo de llamadas
 
 ![alt text](pregunta1a.png)
 
 ### Parte (1.b)
 
-Ahora se tiene el siguiente programa generado con sus respectivo grafo
+Ahora se tiene el siguiente programa generado con su respectivo grafo
 
 ![alt text](pregunta1b.png)
 
@@ -182,10 +182,10 @@ Para las reglas de pasos cortos tenemos que, cuando **switch** se esta evaluando
 $$
 \frac{
 	\begin{matrix}
-	\langle e, \sigma \rangle \to_1 \langle e', \sigma' \rangle
+	\langle e, \sigma \rangle \to_1 \langle e', \sigma \rangle
 	\end{matrix}
 }{
-	\langle \text{switch } e ~ \langle \text{case } e_i \text{ do } c_i  | 0 \leq i < n  \rangle, \sigma \rangle \to_1 \langle \text{switch } e' ~ \langle \text{case } e_j \text{ do } c_j  | 0 \leq j < n  \rangle, \sigma' \rangle
+	\langle \text{switch } e ~ \langle \text{case } e_i \text{ do } c_i | 0 \leq i < n  \rangle, \sigma \rangle \to_1 \langle \text{switch } e' ~ \langle \text{case } e_j \text{ do } c_j | 0 \leq j < n  \rangle, \sigma \rangle
 }
 $$
 
@@ -193,10 +193,10 @@ Para cuando la expresion del **case** se esta evaluando tenemos que
 $$
 \frac{
 	\begin{matrix}
-	\langle e, \sigma \rangle |\to m & \langle e_0, \sigma \rangle \to_1 \langle e'_0, \sigma' \rangle
+	\langle e, \sigma \rangle \to m & \langle e_0, \sigma \rangle \to_1 \langle e'_0, \sigma \rangle
 	\end{matrix}
 }{
-	\langle \text{switch } e ~ \langle \text{case } e_0 \text{ do } c_0  ; Complement  \rangle, \sigma \rangle \to_1 \langle \text{switch } e ~ \langle \text{case } e'_0 \text{ do } c_0 ; Complement  \rangle, \sigma' \rangle
+	\langle \text{switch } e ~ \langle \text{case } e_0 \text{ do } c_0  ; Complement  \rangle, \sigma \rangle \to_1 \langle \text{switch } e ~ \langle \text{case } e'_0 \text{ do } c_0 ; Complement  \rangle, \sigma \rangle
 }
 $$
 
@@ -207,10 +207,10 @@ En caso de coincidencia del primer **case** tenemos que
 $$
 \frac{
 	\begin{matrix}
-	\langle e, \sigma \rangle |\to m & \langle e_0, \sigma \rangle \to m_0
+	\langle e, \sigma \rangle \to m & \langle e_0, \sigma \rangle \to m_0
 	\end{matrix}
 }{
-	\langle \text{switch } e ~ \langle \text{case } e_0 \text{ do } c_0  ; Complement  \rangle, \sigma \rangle \to_1 \langle e_0, \sigma \rangle
+	\langle \text{switch } e ~ \langle \text{case } e_0 \text{ do } c_0 ; Complement \rangle, \sigma \rangle \to_1 \langle e_0, \sigma \rangle
 }
 $$
 
@@ -225,7 +225,7 @@ $$
 	\langle e, \sigma \rangle |\to m & \langle e_0, \sigma \rangle \to m_0
 	\end{matrix}
 }{
-	\langle \text{switch } e ~ \langle \text{case } e_0 \text{ do } c_0  ; Complement  \rangle, \sigma \rangle \to_1 \langle \text{switch } e | \langle Complement \rangle, \sigma \rangle
+	\langle \text{switch } e ~ \langle \text{case } e_0 \text{ do } c_0  ; Complement  \rangle, \sigma \rangle \to_1 \langle \text{switch } e ~ \langle Complement \rangle, \sigma \rangle
 }
 $$
 
@@ -237,7 +237,7 @@ Finalmente, cuando no queden casos por evaluar tenemos que
 $$
 \frac{
 	\begin{matrix}
-	\langle e, \sigma \rangle |\to m
+	\langle e, \sigma \rangle \to m
 	\end{matrix}
 }{
 	\langle \text{switch } e ~ \langle \emptyset  \rangle, \sigma \rangle \to_1 \langle \text{skip}, \sigma \rangle
@@ -248,7 +248,7 @@ $$
 
 Definamos los dos siguientes conjuntos
 
-* $\displaystyle Set_1 =  \bigcup_{j=0}^{n-1} (\sigma, \sigma') | \mathcal{A}[[e]] = \mathcal{A}[[e_j]]\sigma \land \forall i < j : \mathcal{A}[[e]] \sigma \neq \mathcal{A}[[e_i]]\sigma \land (\sigma, \sigma') \in \mathcal{C}[[c_j]]$ representa la primera
+* $\displaystyle Set_1 =\bigcup_{j=0}^{n-1} \left( (\sigma, \sigma') | \mathcal{A}[[e]]\sigma = \mathcal{A}[[e_j]]\sigma \land \forall i < j : \mathcal{A}[[e]] \sigma \neq \mathcal{A}[[e_i]]\sigma \land (\sigma, \sigma') \in \mathcal{C}[[c_j]] \right)$ representa la primera
 coincidencia de alguna expresión $e_j$ con $e$.
 * $Set_2 = \{(\sigma, \sigma) | \forall i \in [0, n-1] : \mathcal{A}[[e]]\sigma \neq \mathcal{A}[[e_i]]\sigma\}$ representa el caso por base, en el que niguna de las expresiones $e_i$ coinciden con la expresión $e$.
 
